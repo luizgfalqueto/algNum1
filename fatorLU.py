@@ -1,4 +1,6 @@
 import math
+import numpy as np
+
 
 def read_a(A, n):
     for i in range(0, n):
@@ -29,45 +31,51 @@ def cria_matriz_b(n):
     return matriz
 
 
-def pivotear(A, n, b):
-    r = -10000
-    for k in range(0, n - 1):
-        maior = math.fabs(A[k][k])
-        for i in range(k, n):
-            if math.fabs(A[i][k]) > maior:
-                maior = math.fabs(A[i][k])
-                r = i
+def fator_lu(A, n):
+    U = np.copy(A)
 
-        for i in range(0, n):
-            v = A[k][i]
-            A[k][i] = A[r][i]
-            A[r][i] = v
-        v = b[k]
-        b[k] = b[r]
-        b[r] = v
+    L = [0] * n
+    for i in range(0, n):
+        L[i] = [0] * n
 
-        for i in range(k + 1, n):
-            m = ((-1) * A[i][k]) / A[k][k]
-            for j in range(k, n):
-                A[i][j] = A[i][j] + m * A[k][j]
-            b[i] = b[i] + m * b[k]
+    for j in range(n - 1):
+        for i in range(j + 1, n):
+            L[i][j] = U[i][j] / U[j][j]
+            for k in range(j + 1, n):
+                U[i][k] = U[i][k] - L[i][j] * U[j][k]
+            U[i][j] = 0
 
-    return A, b
+    for i in range(n):
+        for j in range(n):
+            if i==j:
+                L[i][j] = 1
 
-def sub_ret(A, n, b):
+    return L, U
+
+def vet_y(L, n, b):
+    y = [0 for f in range(0, n)]
+    y[0] = b[0] / L[0][0]
+
+    for i in range(1, n):
+        soma = 0
+        for j in range(0, n):
+            soma = soma + L[i][j] * y[j]
+        y[i] = (b[i] - soma) / L[i][i]
+    return y
+
+def vet_x(U, n, y):
     x = [0 for f in range(0, n)]
     n = n - 1
-    x[n] = b[n] / A[n][n]
+    x[n] = y[n] / U[n][n]
 
     for i in range(n - 1, -1, -1):
         soma = 0
         for j in range(i, n + 1):
-            soma = soma + A[i][j] * x[j]
-        x[i] = (b[i] - soma) / A[i][i]
+            soma = soma + U[i][j] * x[j]
+        x[i] = (y[i] - soma) / U[i][i]
     return x
 
-
-def gauss_pivot():
+def main():
     o = int(input("Digite a ordem da matriz: "))
     print()
 
@@ -90,21 +98,15 @@ def gauss_pivot():
             print(f'[ {A[l][c]} ]', end='')
         print(f' = [ {b[l]} ]')
 
-    A, b = pivotear(A, o, b)
+    L, U = fator_lu(A, o)
+    y = vet_y(L, o, b)
+    x = vet_x(U, o, y)
 
-    print()
-    print('Matriz triangularizada usando pivotamento')
-    for l in range(0, o):
-        for c in range(0, o):
-            print(f'[ {A[l][c]} ]', end='')
-        print(f' = [ {b[l]} ]')
-
-    x = sub_ret(A, o, b)
     print()
     print('Solução: ')
-    for l in range(0, len(x)):
+    for l in range(0, o):
         print(f'[ {x[l]} ]', end='')
-        print()
+    print()
 
 if __name__ == '__main__':
-    gauss_pivot()
+    main()
