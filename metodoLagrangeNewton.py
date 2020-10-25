@@ -2,7 +2,8 @@ from sympy import Symbol
 import sympy as sym
 import math
 
-def escolherPontos(x, y, grau): # Solicita ao usuário remover alguns pontos para prosseguir com o calculo
+
+def escolherPontos(x, y, grau):  # Solicita ao usuário remover alguns pontos para prosseguir com o calculo
     print('\n Pontos informados:\n')
     while len(x) > grau:
         for i in range(len(x)):
@@ -19,7 +20,8 @@ def escolherPontos(x, y, grau): # Solicita ao usuário remover alguns pontos par
     return x, y
 
 
-def criaMatrizD(x, y, ordem): # Cria matriz com valores de diferencas divididas para cada ordem (para auxiliar no calculo)
+def criaMatrizD(x, y,
+                ordem):  # Cria matriz com valores de diferencas divididas para cada ordem (para auxiliar no calculo)
     matriz = [0 for i in range(len(x))]
 
     tam = 6
@@ -43,38 +45,12 @@ def criaMatrizD(x, y, ordem): # Cria matriz com valores de diferencas divididas 
     return matriz
 
 
-def procuraMaiorOrdem(matriz, x, ordem): # Encontra maior valor das diferencas divididas de ordem k+1
-    maior = matriz[0][ordem]
-
-    for i in range(len(x) - ordem):
-        if maior < matriz[i][ordem]:
-            maior = matriz[i][ordem]
-
-    return maior
-
-
-def calculaErro(x, y, val, grau): # Calcula erro limitante usando os tres pontos mais proximos do ponto informado
+def calculaErro(x, y, val, grau):  # Calcula erro limitante usando os tres pontos mais proximos do ponto informado
     erro = 1
-    pontos = []
+    pontos = x
 
     matriz = criaMatrizD(x, y, grau)
-    maior = procuraMaiorOrdem(matriz, x, grau)
-
-    i = 0
-    while x[i] < val:
-        i += 1
-
-    if i > 0:
-        if i == len(x)-1 or len(x)-2:
-            p1 = len(x)-3
-        else:
-            p1 = i - 1
-    else:
-        p1 = i
-
-    for j in range(grau):
-        pontos.append(x[p1])
-        p1 += 1
+    maior = matriz[0][grau-1]
 
     for i in range(len(pontos)):
         erro *= math.fabs(val - pontos[i])
@@ -84,7 +60,6 @@ def calculaErro(x, y, val, grau): # Calcula erro limitante usando os tres pontos
 
 
 def montaPolinomioLagrange(x, y):
-
     var = Symbol('x')  # Simbolo para montar o polinomio interpolador
     polinomio = 0  # Variavel usada para montar o polinomio interpolador
     pol = []  # Vetor para armazenar em cada iteração o valor atualizado do polinomio
@@ -103,7 +78,6 @@ def montaPolinomioLagrange(x, y):
 
 
 def interpolaValorLagrange(x, y, val):
-
     p = 0  # Variavel usada para calcular
 
     for i in range(len(x)):
@@ -118,14 +92,13 @@ def interpolaValorLagrange(x, y, val):
 
 
 def metodoLagrange(X, Y, x, y):
-
     resp = int(input('Deseja interpolar algum valor? (1 para Sim) (0 para Não) '))
 
     if resp == 1:
         montaPolinomioLagrange(x, y)
         val = float(input('\nInforme o valor que deseja interpolar: '))
         interpolaValorLagrange(x, y, val)
-        calculaErro(X, Y, val, len(x))
+        calculaErro(x, y, val, len(x))
     else:
         montaPolinomioLagrange(x, y)
 
@@ -151,7 +124,6 @@ def atualizaD(x, d, ordem):
 
 
 def montaPolinomioNewton(x, d):
-
     polinomio = 0  # Variavel usada para montar o polinomio interpolador
     var = Symbol('x')  # Simbolo para montar o polinomio interpolador
     pol = []  # Vetor para armazenar em cada iteração o valor atualizado do polinomio
@@ -202,14 +174,12 @@ def metodoNewton(X, Y, x, y):
         val = float(input('\n Informe o valor que deseja interpolar: '))
         print()
         interpolaValorNewton(x, d, val)
-        print()
-        calculaErro(X, Y, val, len(x))
+        calculaErro(x, y, val, len(x))
     else:
         montaPolinomioNewton(x, d)
 
 
 def main():
-
     x = [0.2, 0.34, 0.4, 0.52, 0.6, 0.72]  # Vetor para armazenar os x's dos pontos tabelados
     y = [0.16, 0.22, 0.27, 0.29, 0.32, 0.37]  # Vetor para armazenar os y's respectivos dos pontos tabelados
 
@@ -222,7 +192,7 @@ def main():
         else:
             metodoNewton(x, y, auxX, auxY)
     else:
-        if grau > len(x):
+        if grau > len(x) - 1:
             print('\n\n Impossível calcular com esse grau!')
         else:
             auxX = x
