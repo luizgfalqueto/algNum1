@@ -4,6 +4,7 @@ import math
 
 
 def escolherPontos(x, y, grau):  # Solicita ao usuário remover alguns pontos para prosseguir com o calculo
+    print('\n Escolha pontos que estejam próximos ao valor que deseja interpolar e que o valor esteja entre esses pontos!')
     print('\n Pontos informados:\n')
     while len(x) > grau:
         for i in range(len(x)):
@@ -20,11 +21,10 @@ def escolherPontos(x, y, grau):  # Solicita ao usuário remover alguns pontos pa
     return x, y
 
 
-def criaMatrizD(x, y,
-                ordem):  # Cria matriz com valores de diferencas divididas para cada ordem (para auxiliar no calculo)
+def criaMatrizD(x, y, ordem):  # Cria matriz com valores de diferencas divididas para cada ordem (para auxiliar no calculo)
     matriz = [0 for i in range(len(x))]
 
-    tam = 6
+    tam = len(x)
     for i in range(len(x)):
         matriz[i] = [0 for j in range(tam)]
         matriz[i][0] = y[i]
@@ -44,13 +44,22 @@ def criaMatrizD(x, y,
 
     return matriz
 
+def procuraMaiorOrdem(matriz, grau, tamX):
+    maior = matriz[0][grau]
 
-def calculaErro(x, y, val, grau):  # Calcula erro limitante usando os tres pontos mais proximos do ponto informado
+    for i in range(tamX - grau):
+        if matriz[i][grau] > maior:
+            maior = matriz[i][grau]
+            
+    return maior
+
+
+def calculaErro(X, Y, x, val, grau):  # Calcula erro limitante usando os tres pontos mais proximos do ponto informado
     erro = 1
     pontos = x
 
-    matriz = criaMatrizD(x, y, grau)
-    maior = matriz[0][grau-1]
+    matriz = criaMatrizD(X, Y, grau)
+    maior = procuraMaiorOrdem(matriz, grau, len(X))
 
     for i in range(len(pontos)):
         erro *= math.fabs(val - pontos[i])
@@ -98,7 +107,7 @@ def metodoLagrange(X, Y, x, y):
         montaPolinomioLagrange(x, y)
         val = float(input('\nInforme o valor que deseja interpolar: '))
         interpolaValorLagrange(x, y, val)
-        calculaErro(x, y, val, len(x))
+        calculaErro(X, Y, x, val, len(x))
     else:
         montaPolinomioLagrange(x, y)
 
@@ -174,7 +183,7 @@ def metodoNewton(X, Y, x, y):
         val = float(input('\n Informe o valor que deseja interpolar: '))
         print()
         interpolaValorNewton(x, d, val)
-        calculaErro(x, y, val, len(x))
+        calculaErro(X, Y, x, val, len(x))
     else:
         montaPolinomioNewton(x, d)
 
