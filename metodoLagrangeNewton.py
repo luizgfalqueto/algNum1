@@ -192,6 +192,9 @@ def main():
     x = [0.2, 0.34, 0.4, 0.52, 0.6, 0.72]  # Vetor para armazenar os x's dos pontos tabelados
     y = [0.16, 0.22, 0.27, 0.29, 0.32, 0.37]  # Vetor para armazenar os y's respectivos dos pontos tabelados
 
+    # x = [1, 1.3, 1.7, 2]
+    # y = [0.8415, 1.2526, 1.6858, 1.8186]
+
     grau = int(input('\n Informe o grau do polinômio: ')) + 1
     if grau < len(x):
         auxX, auxY = escolherPontos(x, y, grau)
