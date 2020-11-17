@@ -90,23 +90,43 @@ def erro(X, aux, n): # Função que calcula o erro relativo do problema, servind
         return dif / maioraux
 
 
+def convergencia(A, n):
+    conv = 0
+    for i in range(n):
+        soma=0
+        for j in range(n):
+            if i != j:
+                soma+=A[i][j]
+        if A[i][i] > soma:
+            conv+=1
+
+    return conv
+
 def main():
     stop = 0.05
     d = 1.0
 
     n = int(input('Informe a ordem da Matriz: '))
 
-    A = cria_matriz(n)
-    A = read_a(A, n)
-
     b = cria_vetor(n)
-    b = read_b(b, n)
+    A = cria_matriz(n)
+
+    while True:
+        A = read_a(A, n)
+        b = read_b(b, n)
+
+        if convergencia(A, n) != n:
+            print('Não se pode ter certeza sobre a convergencia da matriz A!')
+            print('Favor, tentar outra vez!')
+
+        if not convergencia(A, n) != n:
+            break
 
     #A = [[10, 2, 1], [1, 5, 1], [2, 3, 10]]
     #b = [7, -8, 6]
 
-    #A = [[10, 3, -2], [2, 8, -1], [1, 1, 5]]
-    #b = [57, 20, -4]
+    # A = [[10, 3, -2], [2, 8, -1], [1, 1, 5]]
+    # b = [57, 20, -4]
 
     ite = int(input('Informe o numero de iterações: '))
 
